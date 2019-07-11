@@ -1,10 +1,12 @@
 <?php
-//require ('signin.php');
+require ('signin.php');
 
-$time = date('h:i:s');
 $day = date('l');
 $boolean = 1;
 
+//var_dump($_SESSION);
+//var_dump($_POST);
+$STAFF = $_SESSION['staff'];
 
 if(isset($_POST["checkIn"])){
                 $sql = "SELECT logBool from logtable where staffId = '$STAFF' and checkInDate = '$date' ";

@@ -1,5 +1,6 @@
 <?php  
-//require ('signin.php');
+require ('signin.php');
+$STAFF = $_SESSION['staff'];
 
  if(isset($_POST['checkOut'])){
                 $sql = "SELECT checkOutTime from logtable where staffId = '$STAFF' and checkInDate = '$date' ";

@@ -3,8 +3,8 @@
 require_once ('dbconnect.php');
 session_start();
 
-$STAFF = $_SESSION['staff'];
 $date = date('Y-m-d');
+$time = date('h:i:s');
 
 //if (isset($_POST['submit'])){ //start of authentication of staff id
 
