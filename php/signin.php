@@ -1,18 +1,27 @@
 <?php 
 
-require_once ('dbconnect.php');
-session_start();
+    $error = false;
 
-$date = date('Y-m-d');
-$time = date('h:i:s');
+//   if(!isset($_SESSION)) 
+//   { 
+//       session_start(); 
+
+//       require_once ('dbconnect.php');
+
+require_once ('bootstrap.php');
 
 //if (isset($_POST['submit'])){ //start of authentication of staff id
 
-if (isset($_POST['staffid']) == false){
-    echo "please enter your staff id";
+$data = array();
+$data['response'] = 'success';
+
+if (isset($_POST['ID']) == false){
+    $data['response'] = 'error';
+    $data['message'] = "please enter your staff id"; 
+    //echo "please enter your staff id";
 }else{
 
-        $staffID = mysqli_real_escape_string($conn, $_POST['staffid']);
+        $staffID = mysqli_real_escape_string($conn, $_POST['ID']);
                             
                 $query = "SELECT staffId FROM `staffinfo` WHERE staffId = '$staffID'";
     //start get staff id in database
@@ -20,13 +29,19 @@ if (isset($_POST['staffid']) == false){
                 $row = mysqli_fetch_assoc($result);
 
                 if ($row == null){
-                    echo "try again";
+                    $data['response'] = 'error';
+                    $data['message'] = "try again"; 
+                    //echo "try again";
+                        
                 }else{
+                    $data['response'] = 'success';
+                    $data['message'] = "signIn Successful";
                     
+                    //echo "successful";
                     $staff_id = $row["staffId"];
-                    echo "id: " . $staff_id;
+                    //echo "id: " . $staff_id;
                     $_SESSION['staff'] = $staff_id;
-                    var_dump($staffID);
+                    //var_dump($staffID);
                     
     //end get staff id in database
 
@@ -36,7 +51,7 @@ if (isset($_POST['staffid']) == false){
                         $query = "SELECT logBool, checkOutTime from logtable WHERE checkInDate = '$date' and staffId = '$STAFF' ";//and checkOutTime is NULL";
                         $result= mysqli_query($conn, $query);
                        $row = mysqli_fetch_assoc($result);
-                        echo "bool:" . $row['logBool'];
+                        //echo "bool:" . $row['logBool'];
                         $log_bool = $row['logBool'];
                          
     //end get boolean from database
@@ -46,31 +61,43 @@ if (isset($_POST['staffid']) == false){
              
                 
                     if ($log_bool == 1 && $row['checkOutTime'] == null){
-                    echo '<style type="text/css">
+                    // echo '<style type="text/css">
 
-                    .button2 {
-                        display: block;
-                    }
-                    .button1{
-                        display:none;
-                    }
-                    </style>';
+                    // .button2 {
+                    //     display: block;
+                    // }
+                    // .button1{
+                    //     display:none;
+                    // }
+                    // </style>';
+                    $data['message'] = 'checkout';
+                    $data['checkin'] = true;
+                    $data['checkout'] = false;
                 }else if($log_bool != 1){
 
-                    echo '<style type="text/css">
+                    // echo '<style type="text/css">
 
-                    .button2 {
-                        display: none;
-                    }
-                    .button1{
-                        display:block;
-                    }
-                    </style>';
+                    // .button2 {
+                    //     display: none;
+                    // }
+                    // .button1{
+                    //     display:block;
+                    // }
+                    // </style>';
+                    $data['message'] = 'checkin';
+                    $data['checkin'] = false;
+                    $data['checkout'] = false;
                 }else{
-                    echo 'you\'ve checked out';
+                    $data['checkin'] = true;
+                    $data['checkout'] = true;
+                    $data['message'] = 'you\'ve checked out';
+                    //echo 'you\'ve checked out';
                 }
                 }
     }
 
 // }//end of authentication on staff id
+
+  //}
+  echo json_encode($data); 
 

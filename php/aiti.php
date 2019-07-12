@@ -15,12 +15,18 @@ require ('signin.php');
 require ('checkin.php');
 require ('checkout.php');            
             
-$data = array();
+// $data = array();
 
-$data['success'] = 200;
+// $data['response'] = success;
+// $data['content'] = "";
 
-//$jdata = json_encode($data);
-//var_dump($jdata);
+// $data['response'] = error;
+// $data['content'] = "";
+
+// $data['error'];
+
+// //$jdata = json_encode($data);
+// //var_dump($jdata);
 
 
 

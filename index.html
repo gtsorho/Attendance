@@ -54,7 +54,7 @@
 						<button class="w3-btn w3-blue w3-round" type="submit" id="Submit">Submit</button>
 
 						<!-- checkIn and checkOut button-->
-						<button class="w3-btn w3-rounded w3-red w3-round" id="check_in" style="display: none;">CheckIn</button>
+						<button class="w3-btn w3-rounded w3-red w3-round" id="check_in" style="display: none;" name="checkIn">CheckIn</button>
 						<button class="w3-btn w3-rounded w3-red w3-round" id="check_out" style="display: none;">CheckOut</button>
 						<br>
 						<span class="w3-text-red" style="display: none;text-align: left;font-weight: bolder;margin-right:-10%" id="staff_alert">Please Enter your Staff ID</span>
@@ -291,8 +291,9 @@
 
 		/* validating the staff area*/
 
-		$("button#Submit").click(function(){
-			var new_reg = /^(AITI)-[0-9]{8}$/i;
+		$("button#Submit").click(function(e){
+			e.preventDefault();
+			//var new_reg = /^(AITI)-[0-9]{8}$/i;
 			var staff_id = $("input#staff_ID").val();
 			if(staff_id.length == 0){
 				$("#staff_ID").addClass("w3-border-red");
@@ -300,23 +301,83 @@
 				return false
 			}
 			else if(staff_id.length != 0){
-				if(!new_reg.test(staff_id)){
-					$("#staff_ID").addClass("w3-border-red");
-					$("#staff_alert").text("Please Enter a valid ID, eg: AITI-34437657");
-					$("#staff_alert").fadeIn();
-					return false
-				}
-				else{
-					("#staff_ID").removeClass("w3-border-red");
-					$("#staff_ID").addClass("w3-border-green");
-					$("#staff_alert").fadeOut();
-					return true
-				}
-			}
-			else{
+				//console.log(staff_id);
+				// $.post('php/signin.php',{'ID': staff_id},function(data){
+				// 	console.log(data);
+				// 	$("button#check_in").show();
+				// 	$("button#check_in").click(function(e){
+				// 		e.preventDefault();
+				// 		$.post('php/checkin.php',function(d){
+				// 			console.log(d);
+				// 		},'json')
+				// 	})
+				// },'json');
 
-				$("#staff_alert").fadeOut();
-				return true
+				$.ajax({
+					url: "php/signin.php",
+					method: "post",
+					data:{'ID': staff_id},
+					dataType: 'json',
+					success: function(data){
+						//console.log(data.message);
+						if(data.response == "success"){
+							if(!data.checkin){
+								$("button#check_in").fadeIn();
+							}
+							else if(data.checkin && !data.checkout){
+								$("button#check_out").fadeIn();
+							}
+							$("button#Submit").hide();
+							if(data.checkout){
+								$("span#staff_alert").text(data.message);
+								$("span#staff_alert").fadeIn();
+							}
+						}
+						
+					},
+					error: function(data){
+						console.log(data.message);
+					}
+				})
+				
+				$("button#check_in").click(function(e){
+							e.preventDefault();
+					$.ajax({
+								url: "php/checkin.php",
+								method: "post",
+								data:{'ID': staff_id, 'checkIn': '2343'},
+								dataType: 'json',
+								success: function(data){
+									$("button#check_in").fadeOut();
+									$("button#check_out").fadeIn();	
+									//$("span#staff_alert").text(data.message);
+								},
+								error: function(data){
+									$("span#staff_alert").text(data.message);
+									$("span#staff_alert").fadeIn();
+								}
+							})
+
+						})
+
+						$("button#check_out").click(function(e){
+							e.preventDefault();
+						$.ajax({
+								url: "php/checkout.php",
+								method: "post",
+								data:{'ID': staff_id, 'checkOut': 'checked'},
+								dataType: 'json',
+								success: function(data){
+									console.log(data.message);
+									//$("span#staff_alert").text(data.message);
+								},
+								error: function(data){
+									console.log(data.message);
+								}
+							})
+
+						})
+				return true;
 			}
 		})
 		/* validating with regExp on form feilds*/
