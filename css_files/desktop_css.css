@@ -1,0 +1,89 @@
+div.modal{
+	display: none;
+}
+.desktop_main_content{
+	display: grid;
+	grid-template-rows: minmax(100px,auto) minmax(500px,auto) minmax(85px,auto);
+	grid-template-areas: "h h h h h h h h h h h h"
+						 "b b b b b b b b b b b b"
+						 "f f f f f f f f f f f f";
+}
+.fade{
+	display: none;
+}
+
+.desktop_header{
+	grid-area: h;
+}
+
+.desktop_body{
+	margin-top: 5px;
+	grid-area: b;
+}
+.desktop_footer{
+	grid-area: f;
+}
+div#d_AITI_logo .w3-image{
+	max-width: 20%;
+}
+div#AITI_admin #_admin #open_admin{
+	display: none;
+}
+div#AITI_admin #_admin #close_admin{
+	display: none;
+}
+div#AITI_admin{
+	position: absolute;
+	right: 3%;
+	top: 23px;
+	float: right;
+}
+div#AITI_admin form input{
+	width: 34%;
+	display: inline;
+
+}
+div#AITI_admin form input[placeholder]{
+	font-weight: bold;
+}	
+div#AITI_admin form label{
+
+}
+div#AITI_admin form button{
+	height: 43px;
+	margin-bottom: 3px;
+}
+div.desktop_body #d_body{
+	position: absolute;
+	margin-left: 5%;
+	margin-right: 2%;
+}
+div.desktop_body{
+	color:#fff!important;
+	background-color:#3f51b5!important;
+	position:relative;
+	animation:animateleft 4s;
+}
+@keyframes animateleft{
+		from{top:-400px;opacity:1} 
+		to{top:0;opacity:1}
+		}
+div.desktop_body #d_body form input{
+	width: 50%;
+	height: 50px;
+}
+div.desktop_body #d_body form button{
+	height: 51px;
+	margin-bottom: 3px;
+}
+div.desktop_body #d_body form input[placeholder]{
+	font-weight: bold;
+}
+div.desktop_body #d_body form{
+	position: relative;
+	left: 15%;	
+}
+div.desktop_footer{
+	color:#fff!important;
+	background-color:#000!important
+}
