@@ -3,6 +3,8 @@
 
 <?php
 $message="";
+$data = array();
+
 require_once ('dbconnect.php');
 
 
@@ -14,12 +16,46 @@ require_once ('dbconnect.php');
     
 
 
-	if($count == 0) {
-		$message = "Invalid staffname or Password!";
-	} else {
-		$message = "You are successfully authenticated!";
-	}
+	if($count != 0) {
+		
 
-    echo $message;
+		$sql =  "SELECT staffinfo.staffname, logtable.staffId, logtable.Day, logtable.checkInDate, 
+		logtable.checkInTime, logtable.checkOutTime FROM staffinfo INNER JOIN logtable ON staffinfo.staffId = logtable.staffId";
+		
+		$result = mysqli_query($conn, $sql);
+		// $row = mysqli_fetch_assoc($result);
+		// $count = mysqli_num_rows($result);
+		
+	
+		
+	
+		
+		if (mysqli_num_rows($result) > 0) {
+		 
+			$logbook = array();
+			while($row = mysqli_fetch_assoc($result)) {
+				$log = [
+					'staffnme' => $row['staffname'],
+					'logday' => $row['Day'],
+					'logdate' => $row['checkInDate'],
+					'inTime' => $row['checkInTime'],
+					'outTime' => $row['checkOutTime']
+				];
+		
+				array_push($logbook,$log);
+	
+			}
+		} 
+	
+
+
+	 else {
+		$data['response'] = 'error';
+		$data['message'] = "Invalid staffname or Password!";
+		
+	}
+}
+
+    echo json_encode($logbook);
 
 ?>
