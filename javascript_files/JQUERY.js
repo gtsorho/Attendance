@@ -234,6 +234,7 @@ $(document).ready(function(){
 			   $("#staff_ID").addClass("w3-border-green");
 			   $("#staff_alert").fadeOut();
 			   return true
+
 		   }
 	   }
 	   else{
