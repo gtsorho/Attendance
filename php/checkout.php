@@ -26,12 +26,12 @@ $data['response'] = 'success';
                 
                 $outTime = $row['checkOutTime'];
 
-                if($outTime != null){
-                    $data['response'] = 'error';
-                    $data['message'] = " you've already checked out";
-                    // echo " you've already checked out";
+                // if($outTime != null){
+                //     $data['response'] = 'error';
+                   
+                //     // echo " you've already checked out";
                     
-                }else{
+                // }
 
                     $sql = "UPDATE `logtable` SET `checkOutTime`='$time' WHERE `checkInDate`='$date' AND `staffId` = '$STAFF' ";
                 
@@ -67,5 +67,5 @@ $data['response'] = 'success';
                         //echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                     }
             
-                }
+                
             }echo json_encode($data);

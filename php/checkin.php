@@ -41,7 +41,7 @@ if(isset($_POST["checkIn"])){
                     
                     if (mysqli_query($conn, $sql)) {
                         $data['response'] = 'success';
-                        $data['message'] = "New record created successfully"; 
+                        $data['message'] = "you have checked in successfully"; 
                         //echo "New record created successfully";
 
                         $sql = "SELECT staffinfo.staffname, logtable.checkInDate, logtable.checkInTime FROM staffinfo INNER JOIN logtable ON staffinfo.staffId = logtable.staffId WHERE logtable.staffId = '$STAFF' AND logtable.checkInDate = '$date'";

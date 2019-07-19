@@ -2,13 +2,22 @@
 
 
 <?php
-$message="";
+
 $data = array();
 
-require_once ('dbconnect.php');
 
 
-    $query = "SELECT * FROM staffinfo WHERE staffId ='" . $_POST["staffid"] . "' and adminPassword = '". $_POST["password"]."' ";
+require_once ('bootstrap.php');
+
+// unset($_SESSION['admin']);
+
+// $admin = $_SESSION['admin'];
+// var_dump($admin);
+
+// if($admin != $_SESSION['admin']  || $admin == null ){
+
+
+	$query = "SELECT * FROM staffinfo WHERE staffId ='" . $_POST["ID"] . "' and adminPassword = '". $_POST["pass"]."' ";
     
     $result = mysqli_query($conn,$query);
       $count  = mysqli_num_rows($result);
@@ -17,9 +26,13 @@ require_once ('dbconnect.php');
 
 
 	if($count != 0) {
-		
+		$_SESSION['admin'] = $_POST["ID"];
 
-		$sql =  "SELECT staffinfo.staffname, logtable.staffId, logtable.Day, logtable.checkInDate, 
+		$data['response'] = 'success'; 
+
+		$data['response'] = 'success';
+
+	$sql =  "SELECT logtable.id, staffinfo.staffname, logtable.staffId, logtable.Day, logtable.checkInDate, 
 		logtable.checkInTime, logtable.checkOutTime FROM staffinfo INNER JOIN logtable ON staffinfo.staffId = logtable.staffId";
 		
 		$result = mysqli_query($conn, $sql);
@@ -35,6 +48,7 @@ require_once ('dbconnect.php');
 			$logbook = array();
 			while($row = mysqli_fetch_assoc($result)) {
 				$log = [
+					'logid' => $row['id'],
 					'staffnme' => $row['staffname'],
 					'logday' => $row['Day'],
 					'logdate' => $row['checkInDate'],
@@ -45,17 +59,21 @@ require_once ('dbconnect.php');
 				array_push($logbook,$log);
 	
 			}
-		} 
-	
-
-
-	 else {
+			$data['logbook'] = $logbook;
+		}
+		unset($_SESSION['admin']);
+	} else {
 		$data['response'] = 'error';
 		$data['message'] = "Invalid staffname or Password!";
 		
 	}
-}
+// }else{
+	
+// }
 
-    echo json_encode($logbook);
+
+	// echo json_encode($logbook);
+	echo json_encode($data);
+
 
 ?>

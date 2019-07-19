@@ -11,18 +11,19 @@
 require_once ('bootstrap.php');
 
 //if (isset($_POST['submit'])){ //start of authentication of staff id
-
+//var_dump($_POST["ID"]);
 $data = array();
 $data['response'] = 'success';
 
+
 if (isset($_POST['ID']) == false){
     $data['response'] = 'error';
-    $data['message'] = "please enter your staff id"; 
+    $data['message'] = "you have entered a wrong ID"; 
     //echo "please enter your staff id";
 }else{
 
         $staffID = mysqli_real_escape_string($conn, $_POST['ID']);
-                            
+                $data['response'] = 'success';
                 $query = "SELECT staffId FROM `staffinfo` WHERE staffId = '$staffID'";
     //start get staff id in database
                 $result = mysqli_query($conn, $query);
@@ -30,7 +31,7 @@ if (isset($_POST['ID']) == false){
 
                 if ($row == null){
                     $data['response'] = 'error';
-                    $data['message'] = "try again"; 
+                    $data['message'] = "try again, you have entered a wrong ID"; 
                     //echo "try again";
                         
                 }else{
