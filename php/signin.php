@@ -25,6 +25,7 @@ if (isset($_POST['ID']) == false){
         $staffID = mysqli_real_escape_string($conn, $_POST['ID']);
                 $data['response'] = 'success';
                 $query = "SELECT staffId FROM `staffinfo` WHERE staffId = '$staffID'";
+                
     //start get staff id in database
                 $result = mysqli_query($conn, $query);
                 $row = mysqli_fetch_assoc($result);

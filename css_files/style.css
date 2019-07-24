@@ -186,3 +186,168 @@ button:focus {
     outline: 0px auto -webkit-focus-ring-color;
 }
 
+
+
+
+
+.btn-3{
+  display: inline-block;
+  position: relative;
+  border: none;
+  color:  #dba030;
+  font-size: 28px;
+  cursor: pointer;
+  margin: 20px 30px;
+  border-radius: 2px;
+  background: rgba(27, 27, 27, 0.178);
+}
+ .btnspan{
+  display: block;
+  padding: 6px 15px;
+} 
+.btn-3::before, .btn-3::after{
+  content:"";
+  width: 0;
+  height: 1px;
+  position: absolute;
+  transition:  0.3s ;
+  background: #004dc9;
+  border-radius: 2px;
+}
+
+.btnspan::before, .btnspan::after{
+  content:"";
+  width:1px;
+  height:0;
+  position: absolute;
+  transition:  0.3s ;
+  background: #004dc9;
+  border-radius: 2px;
+}
+.btn-3:hover::before, .btn-3:hover::after{
+  width: 100%;
+}
+.btn-3:hover .btnspan::before, .btn-3:hover span::after{
+  height: 100%;
+}
+
+/*----- button 3 -----*/
+.btn-3::after{
+  left: 0;
+  bottom: 0;
+  transition-delay: 0.6s;
+}
+.btn-3 span::after{
+  transition-delay: 0.4s;
+  right: 0;
+  bottom: 0
+}
+.btn-3::before{
+  right: 0;
+  top: 0;
+  transition-delay: 0.2s;
+}
+.btn-3 span::before{
+  transition-delay: 0s;
+  left: 0;
+  top: 0;
+}
+
+.btn-3:hover::after{
+  transition-delay: 0s;
+}
+.btn-3:hover span::after{
+  transition-delay: 0.2s;
+}
+.btn-3:hover::before{
+  transition-delay: 0.4s;
+}
+.btn-3:hover span::before{
+  transition-delay: 0.6s;
+}
+
+
+
+
+
+
+
+
+
+
+
+.btn-2{
+  display: inline-block;
+  position: relative;
+  border: none;
+  color:  #004dc9;
+  font-size: 28px;
+  cursor: pointer;
+  margin: 20px 30px;
+  border-radius: 1px;
+  background: rgba(27, 27, 27, 0.178);
+}
+ .btnspan1{
+  display: block;
+  padding: 6px 15px;
+} 
+.btn-2::before, .btn-2::after{
+  content:"";
+  width: 0;
+  height: 1px;
+  position: absolute;
+  transition:  0.3s ;
+  background: #dba030;
+  border-radius: 2px;
+}
+
+.btnspan1::before, .btnspan1::after{
+  content:"";
+  width:1px;
+  height:0;
+  position: absolute;
+  transition:  0.3s ;
+  background: #dba030;
+  border-radius: 2px;
+}
+.btn-2:hover::before, .btn-2:hover::after{
+  width: 100%;
+}
+.btn-2:hover .btnspan1::before, .btn-2:hover span::after{
+  height: 100%;
+}
+
+/*----- button 2 -----*/
+.btn-2::after{
+  left: 0;
+  bottom: 0;
+  transition-delay: 0.6s;
+}
+.btn-2 span::after{
+  transition-delay: 0.4s;
+  right: 0;
+  bottom: 0
+}
+.btn-2::before{
+  right: 0;
+  top: 0;
+  transition-delay: 0.2s;
+}
+.btn-2 span::before{
+  transition-delay: 0s;
+  left: 0;
+  top: 0;
+}
+
+.btn-2:hover::after{
+  transition-delay: 0s;
+}
+.btn-2:hover span::after{
+  transition-delay: 0.2s;
+}
+.btn-2:hover::before{
+  transition-delay: 0.4s;
+}
+.btn-2:hover::before:hover span::before{
+  transition-delay: 0.6s;
+}

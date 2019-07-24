@@ -1,50 +1,64 @@
 <?php
 
-require ('dbconnect.php');
+require ('bootstrap.php');
+$data = array();
 
 
+        function validateDate($date, $format = 'Y-m-d')
+        {
+            $d = DateTime::createFromFormat($format, $date);
+            return $d && $d->format($format) == $date;
+        }
+
+        // var_dump(validateDate('2012-02-30')); # true
+        $search_date = strtotime($_POST['search_date']);
+        $act_time = date('Y-m-d', $search_date);
+        $date_tell = validateDate($act_time);
 
 
-
-
-    $sql =  "SELECT staffinfo.staffname, logtable.staffId, logtable.Day, logtable.checkInDate, 
-    logtable.checkInTime, logtable.checkOutTime FROM staffinfo INNER JOIN logtable ON staffinfo.staffId = logtable.staffId";
-    
-    $result = mysqli_query($conn, $sql);
     // $row = mysqli_fetch_assoc($result);
     // $count = mysqli_num_rows($result);
     
+    if($date_tell){
+        $data['response'] = 'success'; 
+        
 
-    
-
-    
-    if (mysqli_num_rows($result) > 0) {
-     
-        $logbook = array();
-        while($row = mysqli_fetch_assoc($result)) {
-            $log = [
-                'staffnme' => $row['staffname'],
-                'logday' => $row['Day'],
-                'logdate' => $row['checkInDate'],
-                'inTime' => $row['checkInTime'],
-                'outTime' => $row['checkOutTime']
-            ];
+        $sql =  "SELECT logtable.id, staffinfo.staffname, logtable.staffId, logtable.Day, logtable.checkInDate, 
+        logtable.checkInTime, logtable.checkOutTime FROM staffinfo INNER JOIN logtable ON staffinfo.staffId = logtable.staffId 
+        where  logtable.checkInDate = '$act_time' ";
+        
+        $result = mysqli_query($conn, $sql);
             
-                    // if(isset($_POST['decline'])){
-                    //     echo "delete log";
-                    //     $staff_id = $row['staffId'];
-                    //     $staff_date = $row['checkInDate'];
-                    //     $query =  "DELETE from logtable where staffId = $staff_id and checkInDate =  $staff_date";
-                    // }
-                    // if(isset($_POST['accept'])){
-                    //     echo "log accepted";
-                    // }
 
-            array_push($logbook,$log);
-            // echo $staffnme = $row['staffname']."| ". $logday = $row['Day']."| ". $logdate = $row['checkInDate'] ."| ". $inTime = $row['checkInTime']."| ". $outTime = $row['checkOutTime']."<br>" ;
-           
+
+        if (mysqli_num_rows($result) > 0) {
+     
+            $logbook = array();
+            while($row = mysqli_fetch_assoc($result)) {
+                $log = [
+                    'logid' => $row['id'],
+                    'staffnme' => $row['staffname'],
+                    'logday' => $row['Day'],
+                    'logdate' => $row['checkInDate'],
+                    'inTime' => $row['checkInTime'],
+                    'outTime' => $row['checkOutTime']
+                ];
+                array_push($logbook,$log);
+                $data["logbook"] = $logbook;
+            }
+        }else{
+            $data['response'] = "error";
+            $data['message'] = "No Record Found";
         }
-    } 
+
+        
+    }else{
+        $data['response'] = 'error';
+        $data['message'] = "Invalid date entered";
+    }
+    
+
+    
 
     
 // if(isset($_POST['search'] )){
@@ -68,7 +82,7 @@ require ('dbconnect.php');
 // }
 // }
 // }
-echo json_encode($logbook);
+echo json_encode($data);
     
     
     // foreach ($row as $value){

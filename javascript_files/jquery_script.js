@@ -2,6 +2,14 @@ $(document).ready(function(){
 		
 		
 	/*javascript screen for @media screen (mobile and other devices except desktop)*/
+	if($(window).width() < 800){
+		$(".butt").click(function(){
+			$("#admin_note").text("You cannot view logs on your mobile screen, please use your desktop  or PC");
+			$("#admin_note").fadeIn();
+			$("#admin_note").fadeOut(9000);
+			$(".butt").attr("disabled",true);
+		})
+	}
 
    /* -----------------------------------------------------------------------------------*/
    /*javascript validatiom for the modal pop up*/
@@ -33,7 +41,7 @@ $(document).ready(function(){
 						var new_table = "";
 	
 						$.each(data.logbook, (i,val)=>{
-							new_table += '<tr id="new_table">'+
+							new_table += '<tr>'+
 							'<td>'+ val.staffnme +'</td>'+
 							'<td>'+ val.logday +'</td>'+
 							'<td>'+ val.logdate +'</td>'+
@@ -42,9 +50,11 @@ $(document).ready(function(){
 							'<td><button type="button" id= "'+val.logid+'"  class="btn btn-outline-dark btn_dlt">Decline</button></td>'+
 							'<tr>';
 						});
-						$("#find").text(data.logbook.length + " SEARCH RESULTS(S) FOUND");
-						$("#find").fadeIn();
-						$("#old_table").replaceWith(new_table);
+						$("#find").text(data.logbook.length + " SEARCH RESULT(S) FOUND");
+                        $("#find").fadeIn();
+                        $("#search_date").val("")
+                        $("#disp_tbl tbody tr").remove();
+                        $("#disp_tbl tbody").append(new_table);
 						
 						$(".btn_dlt").click((e) =>{
                         var t_row = e.currentTarget;
@@ -74,7 +84,7 @@ $(document).ready(function(){
 						
 					}
 					else if(data.response == "error"){
-						$("#new_table").replaceWith("");
+						$("#disp_tbl tbody tr").remove();
 						$("#find").text(data.message);
 						$("#find").fadeIn();
 					}
@@ -129,6 +139,7 @@ $(document).ready(function(){
 			datatype: "json",
 			data: {"ID": id_val, "pass": staff_pass},
 			success: (data) => {
+                $("#find").fadeOut();
 				
 				if(typeof(data) == "string"){
 					data = JSON.parse(data);
@@ -138,7 +149,7 @@ $(document).ready(function(){
 					var table = "";
 	
 					$.each(data.logbook, (i,val)=>{
-						table += '<tr id="old_table">'+
+						table += '<tr>'+
 						'<td>'+ val.staffnme +'</td>'+
 						'<td>'+ val.logday +'</td>'+
 						'<td>'+ val.logdate +'</td>'+
@@ -146,17 +157,16 @@ $(document).ready(function(){
                         '<td>'+ val.outTime +'</td>'+
 						'<td><button type="button" id= "'+val.logid+'"  class="btn btn-outline-dark btn_dlt">Decline</button></td>'+
 						'<tr>';
-					});
+                    });
+                    $("#search_date").val();
+                    $("#disp_tbl tbody tr").remove();
 					$("input[name='Pass']").val("");
-					$("#LogIn").attr("data-target","#exampleModalScrollable");
 					$("#exampleModalScrollable").modal("toggle");
 					$("#disp_tbl tbody").append(table);
 
                     $(".btn_dlt").click((e) =>{
                         var t_row = e.currentTarget;
-						var id = e.currentTarget.id;
-						
-						
+                        var id = e.currentTarget.id;
 
                         $.ajax({
                             url: "php/decline.php",
@@ -215,7 +225,7 @@ $(document).ready(function(){
 	   var my_pass = $(this).val();
 	   if(!pass_code.test(my_pass)){
 		   $("input#pass").addClass("w3-border-red");
-		   $("#admin_alert").text("Please enter a valid password format, password should contain at least five numerics");
+		   $("#admin_alert").text("Please enter a valid password format");
 		   $("#admin_alert").fadeIn();
 		   return false
 	   }
@@ -275,7 +285,8 @@ $(document).ready(function(){
 						  console.log(data.message);
 						  $("#staff_alert").addClass("w3-text-red");
 						  $("#staff_alert").text(data.message);
-						$("#staff_alert").show(data.message);
+						$("#staff_alert").fadeIn();
+						$("#staff_alert").fadeOut(10000);
 					  }
 					},
 					error: function(err){
@@ -294,24 +305,26 @@ $(document).ready(function(){
 						success: (data) => {
 							if(typeof(data) == "string"){
 								data = JSON.parse(data);
-									 $("#staff_alert").text(data.message);
-									 $("#staff_alert").removeClass("w3-text-red");
-									 $("#staff_alert").addClass("w3-text-green");
-									 $("#staff_alert").fadeIn();
-									 $("#check_in").fadeOut();
-									 $("input#staff_ID").val("");
-									 $(".alert").text("staff name: " +data.log.staffname+ " | Date: " +data.log.logdate+ " | checkin Time " +data.log.inTime);
-									 $(".alert").show();
+							}
+							if(data.response == "success"){
+								$("#staff_alert").text(data.message);
+								$("#staff_alert").removeClass("w3-text-red");
+								$("#staff_alert").addClass("w3-text-green");
+								$("#staff_alert").fadeIn();
+								$("#check_in").fadeOut();
+								$("input#staff_ID").val("");
+								$(".alert").text("staff name: " +data.log.staffname+ " | Date: " +data.log.logdate+ " | checkin Time " +data.log.inTime);
+								$(".alert").show();
+							}
+							else if(data.response == "error"){
+								$("#staff_alert").text(data.message);
+								$("#staff_alert").addClass("w3-text-red");
+								$("#staff_alert").fadeIn();
+								$("input#staff_ID").val("");
 							}
 						},
-						error: (data) => {
-							if(typeof(data) == "string"){
-								data = JSON.parse(data);
-									$("#staff_alert").text(data.message);
-									$("#staff_alert").addClass("w3-text-red");
-									$("#staff_alert").fadeIn();
-									$("input#staff_ID").val("");
-							}
+						error: (err) => {
+							console.log(err);
 						}
 					})
 				})
@@ -326,7 +339,9 @@ $(document).ready(function(){
 						success: (data) => {
 							if(typeof(data) == "string"){
 								data = JSON.parse(data);
-										$("#staff_alert").text(data.message);
+							}
+							if(data.response == "success"){
+								$("#staff_alert").text(data.message);
 										$("#check_out").fadeOut();
 										$("#staff_alert").removeClass("w3-text-red");
 										$("#staff_alert").addClass("w3-text-green");
@@ -334,17 +349,16 @@ $(document).ready(function(){
 										$(".alert").text("staff name: " +data.log.staffname+ " | Date: " +data.log.logdate+ " | checkin Time " +data.log.inTime+ " | checkout Time "  +data.log.outTime);
 										$(".alert").show();
 										$("input#staff_ID").val("");
-										
 							}
-						},
-						error: (data) => {
-							if(typeof(data) == "string"){
-								data = JSON.parse(data);
+							else if(data.response == "error"){
 								$("#staff_alert").text(data.message);
 								$("#staff_alert").addClass("w3-text-red");
 								$("#staff_alert").fadeIn();
 								$("input#staff_ID").val("");
 							}
+						},
+						error: (err) => {
+							console.log(err);
 						}
 					})
 			})

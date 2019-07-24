@@ -18,27 +18,28 @@ if(!isset($_SESSION['staff'])){
 //var_dump($_SESSION);
 //var_dump($_POST);
 
-$STAFF = $_SESSION['staff'];
+$STAFF = mysqli_real_escape_string($conn, $_SESSION['staff']); 
+$Cdate = mysqli_real_escape_string($conn, $date);
 
-$data['response'] = 'error';
+// $data['response'] = 'error';
+
 
 if(isset($_POST["checkIn"])){
-                $sql = "SELECT logBool from logtable where staffId = '$STAFF' and checkInDate = '$date' ";
-               
+                $sql = "SELECT logBool from logtable where staffId = '$STAFF' and checkInDate = '$Cdate' ";
+                
                 $result = mysqli_query($conn, $sql);
                 
                 $row = mysqli_fetch_assoc($result);
                 
                 $logbool = $row['logBool'];
+                // if($logbool != null){
+                //     $data['response'] = 'error'; 
+                //     $data['message'] = " you've already checked in"; 
+                //     //echo " you've already checked in";
+                // }
+                if(!$logbool){
+                    $sql = "INSERT INTO `logtable` VALUES (NULL, '$STAFF' , '$date', '$time', NULL, '$day', $boolean)";
 
-                if($logbool != null){
-                    $data['response'] = 'error'; 
-                    $data['message'] = " you've already checked in"; 
-                    //echo " you've already checked in";
-                    
-                }else{
-                    $sql = "INSERT INTO `logtable` VALUES (NULL, '$STAFF' , '$date', '$time', NULL, '$day', $boolean, NULL)";
-                    
                     if (mysqli_query($conn, $sql)) {
                         $data['response'] = 'success';
                         $data['message'] = "you have checked in successfully"; 

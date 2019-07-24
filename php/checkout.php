@@ -13,11 +13,12 @@ if(!isset($_SESSION['staff'])){
     echo json_encode($data);
     return false;
 }
-$STAFF = $_SESSION['staff'];
+$STAFF = mysqli_real_escape_string($conn, $_SESSION['staff']); 
 
-$data['response'] = 'success';
+
 
  if(isset($_POST['checkOut'])){
+    $data['response'] = 'success';
                 $sql = "SELECT checkOutTime from logtable where staffId = '$STAFF' and checkInDate = '$date' ";
                 $result = mysqli_query($conn, $sql);
                 

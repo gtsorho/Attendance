@@ -16,8 +16,11 @@ require_once ('bootstrap.php');
 
 // if($admin != $_SESSION['admin']  || $admin == null ){
 
+	 $adminPass = mysqli_real_escape_string($conn, $_POST["pass"]);
+	 $adminID = mysqli_real_escape_string($conn, $_POST["ID"]);
 
-	$query = "SELECT * FROM staffinfo WHERE staffId ='" . $_POST["ID"] . "' and adminPassword = '". $_POST["pass"]."' ";
+
+	$query = "SELECT * FROM staffinfo WHERE staffId = '$adminID' and adminPassword = '$adminPass' ";
     
     $result = mysqli_query($conn,$query);
       $count  = mysqli_num_rows($result);
@@ -29,11 +32,14 @@ require_once ('bootstrap.php');
 		$_SESSION['admin'] = $_POST["ID"];
 
 		$data['response'] = 'success'; 
-
-		$data['response'] = 'success';
+		
+		$startdate=strtotime("now");
+		$today = date("Y-m-d", $startdate);
+		
 
 	$sql =  "SELECT logtable.id, staffinfo.staffname, logtable.staffId, logtable.Day, logtable.checkInDate, 
-		logtable.checkInTime, logtable.checkOutTime FROM staffinfo INNER JOIN logtable ON staffinfo.staffId = logtable.staffId";
+		logtable.checkInTime, logtable.checkOutTime FROM staffinfo INNER JOIN logtable ON staffinfo.staffId = logtable.staffId 
+		where  logtable.checkInDate = '$today'";
 		
 		$result = mysqli_query($conn, $sql);
 		// $row = mysqli_fetch_assoc($result);
