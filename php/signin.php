@@ -13,7 +13,8 @@ require_once ('bootstrap.php');
 //if (isset($_POST['submit'])){ //start of authentication of staff id
 //var_dump($_POST["ID"]);
 $data = array();
-$data['response'] = 'success';
+// $data['response'] = 'success';
+
 
 
 if (isset($_POST['ID']) == false){
@@ -39,11 +40,14 @@ if (isset($_POST['ID']) == false){
                     $data['response'] = 'success';
                     $data['message'] = "signIn Successful";
                     
+                    
+                    
                     //echo "successful";
                     $staff_id = $row["staffId"];
                     //echo "id: " . $staff_id;
                     $_SESSION['staff'] = $staff_id;
                     //var_dump($staffID);
+                    
                     
     //end get staff id in database
 

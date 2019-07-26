@@ -14,20 +14,19 @@ $(document).ready(function(){
    /* -----------------------------------------------------------------------------------*/
    /*javascript validatiom for the modal pop up*/
    var reg_code = /^(AITI)-[0-9]{8}$/i;
-   var pass_code = /^[0-9]{5,10}$/;
+   var pass_code = /([a-z-Z0-9@#_.!&]+){8,32}/;
    var date_reg = /(^[a-zA-Z]+)\s([0-3]{1}[0-9]{1})\s([0-9]{4}$)/;
    /*________________________________________*/
 
    /* validating user on the frontEnd */
 	$("#search_date").keyup(function(){
 		var search_val = $(this).val();
-		search_val.charAt(0).toUpperCase();
 		if(!date_reg.test(search_val)){
-			$("#notify").text("Please the correct date format");
 			$("#notify").fadeIn();
 		}
 		else{
 			$("#notify").fadeOut();
+			$(".toast").hide();
 			$.ajax({
 				url: "php/adminpage.php",
 				method: "post",
@@ -47,40 +46,64 @@ $(document).ready(function(){
 							'<td>'+ val.logdate +'</td>'+
 							'<td>'+ val.inTime +'</td>'+
                         	'<td>'+ val.outTime +'</td>'+
-							'<td><button type="button" id= "'+val.logid+'"  class="btn btn-outline-dark btn_dlt">Decline</button></td>'+
+							'<td><button type="button"  class="btn btn-outline-dark btn_dlt">Decline</button>'+
+									'<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position:sticky;left: 420px;top:0px;opacity: 1;float: right;margin-right: 5px;margin-top: -37px;width: 250px ;display: none;">'+
+                       						 '<div class="toast-header ">'+
+                          
+                         					 '<strong class="mr-auto">Delete Log Permanently?</strong>'+
+                          						'<small></small>'+
+                        
+                       						 '</div>'+
+                        					'<div class="toast-body">'+
+                          					'<center>'+
+                          					'<button type="button" class="btn btn-outline-primary yes" id= "'+val.logid+'"  style="width: 50px; margin-right:20px">Yes</button>'+
+                         				 	'<button type="button" class="btn btn-outline-danger no"  style="width: 50px; margin-left:20px">No</button>'+
+                        					'</center></div>'+
+                      					'</div>'+
+									'</div>'+
+									'</td>'+
 							'<tr>';
 						});
-						$("#find").text(data.logbook.length + " SEARCH RESULT(S) FOUND");
+						$("#find").text(data.logbook.length + " SEARCH RESULT(S) FOUND for " + search_val.toUpperCase());
                         $("#find").fadeIn();
                         $("#search_date").val("")
                         $("#disp_tbl tbody tr").remove();
                         $("#disp_tbl tbody").append(new_table);
-						
 						$(".btn_dlt").click((e) =>{
-                        var t_row = e.currentTarget;
-                        var id = e.currentTarget.id;
-
-                        $.ajax({
-                            url: "php/decline.php",
-                            method: "post",
-                            data: {"log_Id":id},
-                            success: (data)=>{
-								if (typeof(data) == "string" ){
-									data = JSON.parse(data);
+							e.stopPropagation();
+							var btn_target = e.currentTarget;
+							$(btn_target).next().show();
+						})
+						$(".yes").click(function(e){
+							var yes_targ = e.currentTarget;
+							var id = e.currentTarget.id;
+							$.ajax({
+								url: "php/decline.php",
+								method: "post",
+								data: {"log_Id":id},
+								success: (data)=>{
+									if (typeof(data)== "string" ){
+										data = JSON.parse(data);
+									}
+									if(data.response == "success"){
+												$(yes_targ).closest("tr").fadeOut();
+												$(".toast").hide();	
+									}
+									else{
+										alert("invalid id");
+									}
+	
+								},
+								error:(err) => {
+									alert(err)
 								}
-                                if(data.response == "success"){
-                                    $(t_row).closest('tr').remove();
-                                }
-                                else{
-									alert("invalid id");
-                                }
-
-							},
-							error:(err) => {
-								alert(err)
-							}
-                        })
-                    })
+							})
+							$(".toast").hide();
+						})
+						$(".no").click(function(e){
+							var no_targ = e.currentTarget;
+							$(no_targ).parents("div.toast").hide();
+						})
 						
 					}
 					else if(data.response == "error"){
@@ -109,8 +132,6 @@ $(document).ready(function(){
 	   else if(id_val.length != 0 && staff_pass.length == 0){
 		   if (!reg_code.test(id_val)) {
 			   $("#admin_ID").addClass("w3-border-red");
-			   $("#admin_alert").text("Please Enter a valid ID, eg: AITI-34437657");
-			   $("#admin_alert").fadeIn();
 			   return false
 		   }else if(staff_pass.length == 0){
 			   $("#pass").addClass("w3-border-red");
@@ -128,11 +149,12 @@ $(document).ready(function(){
 
 	   }
 	   else if(id_val.length == 0 && staff_pass.length != 0){
-		   $("#admin_alert").text("Please Enter a valid ID, eg: AITI-34437657");
+		   $("#admin_alert").text("Please Enter a your ID");
 		   $("#admin_alert").fadeIn();
 		   return false
 	   }
 	   else{
+		$(".toast").hide();
 		$.ajax({
 			url: "php/adminsignin.php",
 			method: "post",
@@ -147,49 +169,84 @@ $(document).ready(function(){
 				}
 				if(data.response == "success"){
 					var table = "";
-	
+					var new_div = "";
 					$.each(data.logbook, (i,val)=>{
-						table += '<tr>'+
-						'<td>'+ val.staffnme +'</td>'+
-						'<td>'+ val.logday +'</td>'+
-						'<td>'+ val.logdate +'</td>'+
-						'<td>'+ val.inTime +'</td>'+
-                        '<td>'+ val.outTime +'</td>'+
-						'<td><button type="button" id= "'+val.logid+'"  class="btn btn-outline-dark btn_dlt">Decline</button></td>'+
-						'<tr>';
+						table += '<tr >'+
+									'<td>'+ val.staffnme +'</td>'+
+									'<td>'+ val.logday +'</td>'+
+									'<td>'+ val.logdate +'</td>'+
+									'<td>'+ val.inTime +'</td>'+
+									'<td>'+ val.outTime +'</td>'+
+									'<td><button type="button"   class="btn btn-outline-dark btn_dlt">Decline</button>'+
+											'<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position:sticky;left: 420px;top:0px;opacity: 1;float: right;margin-right: 5px;margin-top: -37px;width: 250px ;display: none;">'+
+                       						 '<div class="toast-header ">'+
+                          
+                         					 '<strong class="mr-auto">Delete Log Permanently?</strong>'+
+                          						'<small></small>'+
+                        
+                       						 '</div>'+
+                        					'<div class="toast-body">'+
+                          					'<center>'+
+                          					'<button type="button" class="btn btn-outline-primary yes" id= "'+val.logid+'" style="width: 50px; margin-right:20px">Yes</button>'+
+                         				 	'<button type="button" class="btn btn-outline-danger no"  style="width: 50px; margin-left:20px">No</button>'+
+											'</center>'+
+											'</div>'+
+                      						'</div>'+
+											'</div>'+
+									'</td>'+
+									
+									'<tr>';
+									// console.log(val.logid);
                     });
                     $("#search_date").val();
                     $("#disp_tbl tbody tr").remove();
 					$("input[name='Pass']").val("");
 					$("#exampleModalScrollable").modal("toggle");
 					$("#disp_tbl tbody").append(table);
+					$("#search_form").after(new_div);
+					
 
-                    $(".btn_dlt").click((e) =>{
-                        var t_row = e.currentTarget;
-                        var id = e.currentTarget.id;
-
-                        $.ajax({
-                            url: "php/decline.php",
-                            method: "post",
-                            data: {"log_Id":id},
-                            success: (data)=>{
+					$(".btn_dlt").click((e) =>{
+						e.stopPropagation();
+						var btn_target = e.currentTarget;
+						$(btn_target).next().show();
+					})
+					$(".yes").click(function(e){
+						var yes_targ = e.currentTarget;
+						var id = e.currentTarget.id;
+						console.log(id);
+						$.ajax({
+							url: "php/decline.php",
+							method: "post",
+							data: {"log_Id":id},
+							success: (data)=>{
 								if (typeof(data)== "string" ){
 									data = JSON.parse(data);
 								}
-                                if(data.response == "success"){
-                                    $(t_row).closest('tr').remove();
-                                }
-                                else{
+								if(data.response == "success"){
+											$(yes_targ).closest("tr").fadeOut();
+											$(".toast").hide();	
+								}
+								else{
 									alert("invalid id");
-                                }
+								}
 
 							},
 							error:(err) => {
 								alert(err)
 							}
-                        })
-                    })
-                    
+						})
+						$(".toast").hide();
+					})
+					$(".no").click(function(e){
+						var no_targ = e.currentTarget;
+						$(no_targ).parents("div.toast").hide();
+					})
+
+					
+					
+		
+					// var new_target = e.Target;
 					
 				}
 				else if(data.response == "error"){
@@ -210,8 +267,6 @@ $(document).ready(function(){
 	   var val= $(this).val();
 	   if (!reg_code.test(val)) {
 		   $("#admin_ID").addClass("w3-border-red");
-		   $("#admin_alert").text("Please Enter a valid ID, eg: AITI-34437657");
-		   $("#admin_alert").fadeIn();
 		   return false
 	   }
 	   else{
@@ -225,7 +280,7 @@ $(document).ready(function(){
 	   var my_pass = $(this).val();
 	   if(!pass_code.test(my_pass)){
 		   $("input#pass").addClass("w3-border-red");
-		   $("#admin_alert").text("Please enter a valid password format");
+		//    $("#admin_alert").text("Please enter a valid password");
 		   $("#admin_alert").fadeIn();
 		   return false
 	   }
@@ -263,7 +318,45 @@ $(document).ready(function(){
 					}
 					  if(data.response == "success"){
 							if(data.checkin == false && data.checkout == false){
+								$.ajax({
+									url: "php/feedback.php",
+									method: "post",
+									data:{'ID': staff_id},
+									datatype: "json",
+									success: (data) => {
+										if(typeof(data) == "string"){
+											data = JSON.parse(data);
+										}
+										if(data.response == "success"){
+											var new_p = "";
+											$.each(data.logbook, (i,val)=>{
+												new_p += '<p>'+val.display+'</p>'+'<br>';
+											})
+											if(data.logbook.length == 1){
+												console.log(data.logbook[0].display);
+												$("p#al").text("Your log at " +data.logbook[0].display+ " was deleted");
+												$("div#alert").show();
+											}
+											else if(data.logbook.length > 1){
+												$("p#al").text("Your logs at the below dates where deleted");
+												$("div#alert").append(new_p);
+												$("div#alert").show();
+											}
+										}
+										else if(data.response == "error"){
+											$("p#al").text(data.message);
+											$("div#alert").show();
+										}
+										// else if(data.response == "error"){
+										// 		console.log(data.message)
+										// }
+									},
+									error: (err)=>{
+										console.log(err)
+									}
+								});
 								$("#Submit").hide();
+								$("#check_Out").fadeOut();
 								$("#check_in").fadeIn();
 							}
 							else if(data.checkin == true && data.checkout == false){
@@ -279,6 +372,7 @@ $(document).ready(function(){
 								$("#staff_alert").removeClass("w3-text-red");
 								$("#staff_alert").addClass("w3-text-green");
 								$("#staff_alert").fadeIn();
+								$("#staff_alert").fadeOut(10000);
 							}
 					  }
 					  else if(data.response == "error"){
@@ -297,6 +391,7 @@ $(document).ready(function(){
 					   
 				$("#check_in").click( (e) => {
 					e.preventDefault();
+					$("div#alert").hide();
 					$.ajax({
 						url: "php/checkin.php",
 						method: "post",
@@ -374,7 +469,6 @@ $(document).ready(function(){
 	   var reg_val = $(this).val();
 	   if (!reg_code.test(reg_val)) {
 		   $("#staff_alert").addClass("w3-border-red");
-		   $("#staff_alert").text("Please Enter a valid ID, eg: AITI-34437657");
 		   $("#staff_alert").fadeIn();
 	   }
 	   else{

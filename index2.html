@@ -29,6 +29,7 @@
   
   .modal-dialog {
     max-width: 90%;
+    
   }
   .tab{
     padding-right: 50px;
@@ -36,14 +37,17 @@
   .close {
     color: red;
   }
-  .toast{
+  /* .toast{
+    position: absolute;
+    left: 490px;
+    top:80px;
     opacity: 1;
     float: right;
     margin-right: 5px;
     margin-top: -37px;
     width: 8000px ;
     display: none;
-  }
+  } */
   
 </style>
    
@@ -82,25 +86,12 @@
                       </button>
                     </div>
                     <div class="form-group" class="mx-auto">
-                      <form style="padding-left: 20px; padding-top: 5px;width: 100%">
+                      <form style="padding-left: 20px; padding-top: 5px;width: 100%" id="search_form">
                         <input type="text" class="form-control" id="search_date" name="search_date" style="width: 40%;" placeholder="Search for logs by Date, Eg. july 04 2019" required>
                         <span id="notify" class="w3-text-red" style="display: none" ></span>
                       </form>
 
-                      <div class="toast  " role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="toast-header ">
-                          
-                          <strong class="mr-auto">Delete Log Permanently?</strong>
-                          <small></small>
-                        
-                        </div>
-                        <div class="toast-body">
-                          <center>
-                          <button type="button" class="btn btn-outline-primary" style="width: 80px; margin-right:20px">Yes</button>
-                          <button type="button" class="btn btn-outline-danger" id="element" style="width: 80px; margin-left:20px">No</button>
-                        </center></div>
-                      </div>
-                    </div>
+                      
 
                     
 
@@ -160,7 +151,11 @@
             <!-- <button class="btn btn-3"><span class="btnspan">Hover Me</span></button> -->
             <button type="button" class="btn-3" id="check_in" style="display: none" ><span class="btnspan" >checkIn</span></button>
             <button type="button" class="btn-2"  id="check_out" style="display: none"  ><span class="btnspan1" >checkOut</span></button>
-             
+            <div class="w3-panel alert-danger" id="alert" style="display: none; font-size: 16px; width: 50%;height: 50px;">
+              <h3>ALERT!</h3>
+              <hr>
+              <p id="al"></p>
+            </div> 
             <!-- <a  class="cool1"href=""> <h style="color:#dba030; padding-left:10px; display: none" id="check_out">Check Out</h></a> -->
        </h3>
         </form>
@@ -183,6 +178,6 @@
     <!-- <script src="bootstrap/popper.min.js"  crossorigin="anonymous"></script>
     <script src="bootstrap/js/bootstrap.min.js" crossorigin="anonymous"></script> -->
     
-  	 <script src="javascript_files/jquery_script.js"></script>
+  	 <script src="javascript_files/jquery_and_js_script.js"></script>
   
 </html>
