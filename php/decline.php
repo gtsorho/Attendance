@@ -19,7 +19,7 @@ $outTime = $row['checkOutTime'];
 
 if (!$outTime){
     
-        $sql = "INSERT INTO `actiontable` VALUES (null, '$name' , '$Id', '$inDate', '$inTime', null, null)";
+        $sql = "INSERT INTO `actiontable` VALUES (null, '$name' , '$Id', '$inDate', '$inTime', null, null, '$date', '$time')";
             if (mysqli_query($conn,$sql)){
                 $data['response'] = "success";
                 $sql = "DELETE FROM `logtable` WHERE `id` = $var ";
@@ -35,7 +35,7 @@ if (!$outTime){
                 echo "Error: " . $sql . "<br>" . mysqli_error($conn);
             }
     }else{
-        $sql = "INSERT INTO `actiontable` VALUES (null, '$name' , '$Id', '$inDate', '$inTime', '$outTime',null)";
+        $sql = "INSERT INTO `actiontable` VALUES (null, '$name' , '$Id', '$inDate', '$inTime', '$outTime',null,'$date', '$time')";
             if (mysqli_query($conn,$sql)){
                 $data['response'] = "success";
                 $sql = "DELETE FROM `logtable` WHERE `id` = $var ";
